@@ -18,20 +18,16 @@ The **Library Shop** is a web application where users can borrow and buy books f
     ```bash
     git clone https://github.com/FaIhAjAlAmToPu/libshop.git
     ```
-2. Navigate to the project directory:
-    ```bash
-    cd library_shop
-    ```
-3. Install dependencies:
+2. Install dependencies:
     ```bash
     pip install -r requirements.txt
     ```
-4. Configure the database in `settings.py`.
-5. Apply migrations:
+3. Configure the database in `settings.py`.
+4. Apply migrations:
     ```bash
     python manage.py migrate
     ```
-6. Run the development server:
+5. Run the development server:
     ```bash
     python manage.py runserver
     ```
