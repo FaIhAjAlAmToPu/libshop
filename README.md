@@ -16,7 +16,7 @@ The **Library Shop** is a web application where users can borrow and buy books f
 ## Installation
 1. Clone the repository:
     ```bash
-    git clone <repository-url>
+    git clone https://github.com/FaIhAjAlAmToPu/libshop.git
     ```
 2. Navigate to the project directory:
     ```bash
