@@ -1,0 +1,10 @@
+asgiref==3.8.1
+Django==5.2
+psycopg==3.2.6
+psycopg-binary==3.2.6
+python-decouple==3.8
+setuptools==75.8.0
+sqlparse==0.5.3
+typing_extensions==4.13.1
+tzdata==2025.2
+wheel==0.45.1
