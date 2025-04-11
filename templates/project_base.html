@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <title>{% block title %}LibShop{% endblock %}</title>
+    <!-- MDB icon -->
+    {% load static %}
+    <link rel="icon" href="{% static 'img/library_folder_13789.ico' %}" type="image/x-icon" />
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <!-- Google Fonts Roboto -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap"
+    />
+    <!-- MDB -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static '/css/mdb.min.css' %}" />
+    {% block extra_css %}
+    {% endblock %}
+  </head>
+  <body>
+    <!-- Start your project here-->
+    {% block content %}
+    {% endblock %}
+    <!-- End your project here-->
+
+    <!-- MDB -->
+    {% load static %}
+    <script type="text/javascript" src="{% static '/js/mdb.umd.min.js' %}"></script>
+    <!-- Custom scripts -->
+    {% block extra_js %}
+    {% endblock %}
+  </body>
+</html>

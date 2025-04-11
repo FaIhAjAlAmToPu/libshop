@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from library_shop.contents.models import Book
+from contents.models import Book
 from datetime import timedelta
 
 class Order(models.Model):
