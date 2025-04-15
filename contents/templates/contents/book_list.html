@@ -1,0 +1,42 @@
+{% extends 'project_base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="container mx-auto px-4 py-6">
+    <h1 class="text-3xl font-bold mb-8 text-center">Browse Books</h1>
+
+    {% if books %}
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {% for book in books %}
+                <div class="bg-white shadow-lg rounded-2xl overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                    {% if book.cover_image %}
+                        <img src="{{ book.cover_image }}" alt="{{ book.title }} cover" class="w-full h-56 object-cover">
+                    {% else %}
+                        <div class="w-full h-56 bg-gray-200 flex items-center justify-center text-gray-500">
+                            No Image
+                        </div>
+                    {% endif %}
+                    <div class="p-4">
+                        <h2 class="text-lg font-semibold mb-1">
+                            <a href="{% url 'book_detail' book.id %}" class="text-blue-700 hover:underline">
+                                {{ book.title }}
+                            </a>
+                        </h2>
+                        <p class="text-sm text-gray-600">by {{ book.author }}</p>
+                        <p class="text-sm text-gray-500">Genre: {{ book.genre }}</p>
+                        <p class="text-sm mt-2"><strong>${{ book.price }}</strong></p>
+                        <p class="text-xs text-gray-500">In Stock: {{ book.stock }}</p>
+                        <span class="inline-block mt-2 text-xs font-medium {% if book.available_for_borrow %}text-green-600{% else %}text-red-600{% endif %}">
+                            {% if book.available_for_borrow %}Available for Borrow{% else %}Not Borrowable{% endif %}
+                        </span>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-center text-gray-600">No books available right now.</p>
+    {% endif %}
+</div>
+
+{% endblock %}

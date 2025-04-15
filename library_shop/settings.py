@@ -101,7 +101,7 @@ WSGI_APPLICATION = 'library_shop.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'HOST': 'aws-0-ap-south-1.pooler.supabase.com',
         'PORT': 5432,
         'NAME': 'postgres',
@@ -111,6 +111,7 @@ DATABASES = {
         }
     },
 }
+
 
 
 

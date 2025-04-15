@@ -1,0 +1,15 @@
+{% extends 'project_base.html' %}
+{% load static %}
+
+{% block content %}
+
+<h1 class="text-3xl font-bold">{{ story.title }}</h1>
+<p><strong>Posted at:</strong> {{ story.posted_at }}</p>
+<p>{{ story.description }}</p>
+<p><strong>Authors:</strong>
+  {% for author in story.author.all %}
+    {{ author.username }}{% if not forloop.last %}, {% endif %}
+  {% endfor %}
+</p>
+
+{% endblock %}

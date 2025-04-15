@@ -1,0 +1,20 @@
+{% extends 'project_base.html' %}
+{% load static %}
+
+{% block content %}
+<h2>Nearby Stores</h2>
+
+<button id="refresh-location-btn" title="driving fast?">📍 Refresh My Location</button>
+
+<!-- Your store list would go here -->
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{% static 'js/geolocation.js' %}"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    sendLocationToSession();
+  });
+</script>
+{% endblock %}

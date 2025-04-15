@@ -1,0 +1,12 @@
+{% extends 'project_base.html' %}
+{% load static %}
+
+{% block content %}
+
+<h1 class="text-3xl font-bold mb-4">{{ content.title }}</h1>
+<p><strong>Type:</strong> {{ content.__class__.__name__ }}</p>
+<p>{{ content.description }}</p>
+<p><em>Posted at: {{ content.posted_at }}</em></p>
+
+
+{% endblock %}

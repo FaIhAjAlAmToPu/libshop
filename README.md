@@ -11,7 +11,7 @@ The **Library Shop** is a web application where users can borrow and buy books f
 ## Tech Stack
 - **Backend**: Django (Python)
 - **Frontend**: Django Templates (HTML, CSS, JavaScript)
-- **Database**: MySQL
+- **Database**: PostgreSQL
 
 ## Installation
 1. Clone the repository:
@@ -22,9 +22,11 @@ The **Library Shop** is a web application where users can borrow and buy books f
     ```bash
     pip install -r requirements.txt
     ```
-3. Configure the database in `settings.py`.
+3. Get [**GeoDjango**](https://docs.djangoproject.com/en/5.1/ref/contrib/gis/install/#windows) and configure database in `settings.py`
+
 4. Apply migrations:
     ```bash
+   python manage.py makemigrations
     python manage.py migrate
     ```
 5. Run the development server:
