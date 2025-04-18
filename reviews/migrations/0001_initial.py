@@ -16,25 +16,30 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Order',
+            name='ContentReaction',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('bought_at', models.DateTimeField(auto_now_add=True)),
-                ('cost', models.DecimalField(decimal_places=2, max_digits=10)),
-                ('book', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='contents.book')),
+                ('reaction_type', models.CharField(choices=[('like', 'Like'), ('love', 'Love'), ('laugh', 'Laugh'), ('wow', 'Wow'), ('sad', 'Sad'), ('angry', 'Angry')], max_length=10)),
+                ('content', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='contents.content')),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
+            options={
+                'unique_together': {('user', 'content')},
+            },
         ),
         migrations.CreateModel(
-            name='OrderRequest',
+            name='ContentReview',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('ordered_at', models.DateTimeField(auto_now_add=True)),
-                ('status', models.CharField(choices=[('ordered', 'Ordered'), ('halted', 'Halted'), ('rejected', 'Rejected')], default='ordered', max_length=10)),
-                ('purchase_deadline', models.DateTimeField()),
-                ('comment', models.TextField()),
-                ('book', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='contents.book')),
+                ('rating', models.PositiveIntegerField(choices=[(1, '1'), (2, '2'), (3, '3'), (4, '4'), (5, '5')], default=1)),
+                ('text', models.TextField()),
+                ('created_at', models.DateTimeField(auto_now_add=True)),
+                ('updated_at', models.DateTimeField(auto_now=True)),
+                ('content', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='contents.content')),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
+            options={
+                'unique_together': {('user', 'content')},
+            },
         ),
     ]

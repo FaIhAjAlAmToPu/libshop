@@ -5,7 +5,7 @@ from .models import Book, Story, Content, Author
 class BookAdmin(PolymorphicChildModelAdmin):
     base_model = Book
     list_display = ('title', 'author')
-    list_filter = ('genre')
+    list_filter = ('genre',)
     search_fields = ('title', 'author')
 
 class StoryAdmin(PolymorphicChildModelAdmin):

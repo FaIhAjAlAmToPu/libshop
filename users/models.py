@@ -8,7 +8,6 @@ class Profile(models.Model):
     last_location = gis_models.PointField()
     last_ip_address = models.GenericIPAddressField()
     store = models.ForeignKey(Store, on_delete=models.SET_NULL, null=True, blank=True)
-    staff_role = models.CharField(max_length=50, null=True, blank=True)
 
     def __str__(self):
         return self.user.username
