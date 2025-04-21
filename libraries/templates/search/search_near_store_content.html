@@ -1,0 +1,21 @@
+{% extends 'project_base.html' %}
+{% load static %}
+
+{% block content %}
+<h2>Advanced Search (Near You)</h2>
+<form method="get">
+  <input type="text" name="q" placeholder="Book title" value="{{ request.GET.q }}">
+  <button type="submit">Search</button>
+</form>
+<ul>
+  {% for item in results %}
+    <li>
+      {{ item.content.title }} in {{ item.store.name }}
+      - Distance: {{ item.distance.m|floatformat:2 }} m
+      - ₹{{ item.price }} | Stock: {{ item.stock }}
+    </li>
+  {% empty %}
+    <li>No nearby content found.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

@@ -1,5 +1,9 @@
+from datetime import datetime
+
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Content, Book, Story
+from django.utils.dateparse import parse_date
+
+from .models import Content, Book, Story, Author
 import requests
 
 def content_list(request):
@@ -26,8 +30,13 @@ def story_detail(request, pk):
     story = get_object_or_404(Story, pk=pk)
     return render(request, 'contents/story_detail.html', {'story': story})
 
+
 def search_book(request):
-    return render(request, 'contents/search_book.html')
+    books = Content.objects.all()
+    q = request.GET.get('q')
+    if q:
+        books = books.filter(title__icontains=q)
+    return render(request, 'search/search_book.html', {'books': books})
 
 
 
@@ -72,3 +81,45 @@ def book_not_found(request):
 
 def book_create(request):
     return render(request, 'contents/book_create.html')
+
+
+
+
+def book_works(request, work):
+    # Fetch work details (basic metadata, title, cover, etc.)
+    work_response = requests.get(f'https://openlibrary.org/works/{work}.json')
+    work_data = work_response.json() if work_response.status_code == 200 else {}
+
+    return render(request, 'contents/book_works.html', {
+        'work': work,
+        'work_data': work_data
+    })
+
+def book_detail_by_edition(request, edition):
+    edition_response = requests.get(f'https://openlibrary.org/books/{edition}.json')
+    edition_data = edition_response.json() if edition_response.status_code == 200 else {}
+
+    # Check for existing book by isbn_13
+    isbn_list = edition_data.get('isbn_13', [])
+    if isbn_list:
+        book = Book.objects.filter(isbn=isbn_list[0]).first()
+        if book:
+            return render(request, 'contents/book_detail.html', {'book': book})
+
+    author_name = edition_data.get('authors', [{}])[0].get('name', 'Unknown Author')
+    author, _ = Author.objects.get_or_create(name=author_name)
+
+    book = Book.objects.create(
+        isbn=edition_data.get('isbn_13', [None])[0] or edition_data.get('isbn_10', [None])[0],
+        title=edition_data.get('title', 'Untitled'),
+        subtitle=edition_data.get('subtitle', ''),
+        year_published=edition_data.get('publish_date'),
+        cover_image=f"https://covers.openlibrary.org/b/id/{edition_data['covers'][0]}-L.jpg" if edition_data.get(
+        'covers') else '',
+        genre=', '.join(edition_data.get('subjects', [])[:3]) if edition_data.get('subjects') else 'Unknown',
+        language=edition_data.get('languages', [{}])[0].get('key', 'Unknown').split('/')[-1],
+        publishers=', '.join(edition_data.get('publishers', [])),
+        author=author
+    )
+
+    return render(request, 'contents/book_detail.html', {'book': book})

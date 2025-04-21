@@ -1,0 +1,90 @@
+{% extends 'project_base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+  .messages {
+    margin-bottom: 20px;
+  }
+
+  .alert {
+    padding: 12px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    font-size: 0.95em;
+  }
+
+  .alert-error {
+    background-color: #f8d7da;
+    color: #842029;
+    border: 1px solid #f5c2c7;
+  }
+
+  .alert-success {
+    background-color: #d1e7dd;
+    color: #0f5132;
+    border: 1px solid #badbcc;
+  }
+</style>
+{% endblock %}
+{% block content %}
+<h2>Your Cart</h2>
+
+{% if cart_items %}
+{% if messages %}
+  <div class="messages">
+    {% for message in messages %}
+      <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+  <table>
+    <thead>
+      <tr>
+        <th>Item</th>
+        <th>Price</th>
+        <th>Quantity</th>
+        <th>Total</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in cart_items %}
+        <tr>
+          <td>{{ item.storeContent.content.title }}</td>
+          <td>${{ item.storeContent.price }}</td>
+          <td>
+            <form method="POST" style="display:inline;">
+              {% csrf_token %}
+              <input type="hidden" name="cart_item_id" value="{{ item.id }}">
+              <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="{{ item.storeContent.stock }}" required>
+              <input type="hidden" name="action" value="update">
+              <button type="submit">Update</button>
+            </form>
+          </td>
+          <td>${% widthratio item.quantity 1 item.storeContent.price %}</td>
+          <td>
+            <form method="POST" style="display:inline;">
+              {% csrf_token %}
+              <input type="hidden" name="cart_item_id" value="{{ item.id }}">
+              <input type="hidden" name="action" value="remove">
+              <button type="submit">Remove</button>
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h3>Total: ${{ total_price }}</h3>
+
+  <form action="{% url 'checkout' %}" method="GET">
+    <button type="submit" class="checkout-btn">Proceed to Checkout</button>
+  </form>
+{% else %}
+  <p>Your cart is empty.</p>
+{% endif %}
+{% endblock %}

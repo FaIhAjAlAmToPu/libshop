@@ -1,0 +1,17 @@
+{% extends 'project_base.html' %}
+{% load static %}
+
+{% block content %}
+<h2>Search Book</h2>
+<form method="get">
+  <input type="text" name="q" placeholder="Book title" value="{{ request.GET.q }}">
+  <button type="submit">Search</button>
+</form>
+<ul>
+  {% for book in books %}
+    <li>{{ book.title }}</li>
+  {% empty %}
+    <li>No books found.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

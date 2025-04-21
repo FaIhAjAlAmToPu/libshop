@@ -12,22 +12,25 @@ class Content(PolymorphicModel):
 
 
 class Author(models.Model):
-    first_name = models.CharField(max_length=30)
-    last_name = models.CharField(max_length=30)
-    date_of_birth = models.DateField()
+    name = models.CharField(max_length=30)
+    date_of_birth = models.DateField(null=True, blank=True)
     date_of_death = models.DateField(null=True, blank=True)
     description = models.TextField()
 
     def __str__(self):
-        return self.first_name + " " + self.last_name
+        return self.name
 
 
 class Book(Content):
     isbn = models.CharField(max_length=13, unique=True, blank=True, null=True)
     author = models.ForeignKey(Author, on_delete=models.CASCADE)
-    genre = models.CharField(max_length=30, blank=True)
-    published_date = models.DateField()
+    genre = models.CharField(max_length=200, blank=True)
+    year_published = models.CharField(max_length=20, blank=True, null=True)
     cover_image = models.URLField(blank=True)
+    subtitle = models.CharField(max_length=255, blank=True)
+    publishers = models.CharField(max_length=255, blank=True)
+    language = models.CharField(max_length=10, blank=True)  # 'eng', 'spa', etc.
+    physical_format = models.CharField(max_length=50, blank=True)
 
 
 class Story(Content):

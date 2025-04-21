@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.gis',
+    'leaflet',
     'users',
     'libraries',
     'contents',
@@ -47,6 +49,11 @@ INSTALLED_APPS = [
     'reviews',
     'notifications',
 ]
+
+LEAFLET_CONFIG = {
+    'DEFAULT_CENTER': (20.0, 0.0),
+    'DEFAULT_ZOOM': 2,
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

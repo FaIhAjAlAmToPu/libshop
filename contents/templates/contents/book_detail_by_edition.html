@@ -1,0 +1,46 @@
+{% extends 'project_base.html' %}
+{% block title %}{{ book.title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <h1>{{ book.title }}</h1>
+
+  {% if book.cover_image %}
+    <img src="https://covers.openlibrary.org/b/id/{{ book.cover_image }}-L.jpg" class="img-fluid my-4" alt="Book Cover">
+  {% endif %}
+
+  <ul class="list-group mb-4">
+    <li class="list-group-item"><strong>Title:</strong> {{ book.title }}</li>
+
+    {% if book.subtitle %}
+      <li class="list-group-item"><strong>Subtitle:</strong> {{ book.subtitle }}</li>
+    {% endif %}
+
+    {% if book.published_date %}
+      <li class="list-group-item"><strong>Publish Date:</strong> {{ book.published_date }}</li>
+    {% endif %}
+
+    {% if book.publishers %}
+      <li class="list-group-item"><strong>Publisher(s):</strong> {{ book.publishers|join:", " }}</li>
+    {% endif %}
+
+    {% if book.languages %}
+      <li class="list-group-item"><strong>Languages:</strong>
+        {% for lang in book.languages %}
+          {{ lang.key|slice:"9:" }}{% if not forloop.last %}, {% endif %}
+        {% endfor %}
+      </li>
+    {% endif %}
+
+
+    {% if book.isbn %}
+      <li class="list-group-item"><strong>ISBN-13:</strong> {{ book.isbn|join:", " }}</li>
+    {% endif %}
+
+    {% if book.physical_format %}
+      <li class="list-group-item"><strong>Format:</strong> {{ book.physical_format }}</li>
+    {% endif %}
+  </ul>
+
+</div>
+{% endblock %}

@@ -2,12 +2,11 @@
 {% load static %}
 
 {% block content %}
-
 <div class="container mx-auto p-4 max-w-3xl">
     <div class="bg-white shadow-md rounded-lg p-6">
         <h1 class="text-3xl font-semibold mb-2">{{ book.title }}</h1>
         <p class="text-gray-600 mb-1">by <strong>{{ book.author }}</strong></p>
-        <p class="text-sm text-gray-500 mb-4">Published on {{ book.published_date }}</p>
+        <p class="text-sm text-gray-500 mb-4">Published in {{ book.year_published }}</p>
 
         {% if book.cover_image %}
         <img src="{{ book.cover_image }}" alt="Cover of {{ book.title }}" class="w-48 mb-4 rounded shadow">
@@ -17,15 +16,6 @@
 
         <div class="mt-4 space-y-2">
             <p><strong>Genre:</strong> {{ book.genre }}</p>
-            <p><strong>Price:</strong> ${{ book.price }}</p>
-            <p><strong>Available Stock:</strong> {{ book.stock }}</p>
-            <p><strong>Borrowable:</strong>
-                {% if book.available_for_borrow %}
-                    <span class="text-green-600 font-semibold">Yes</span>
-                {% else %}
-                    <span class="text-red-600 font-semibold">No</span>
-                {% endif %}
-            </p>
         </div>
 
         <div class="mt-6">
@@ -33,5 +23,4 @@
         </div>
     </div>
 </div>
-
 {% endblock %}

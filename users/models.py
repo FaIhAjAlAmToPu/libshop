@@ -5,8 +5,8 @@ from libraries.models import Store
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    last_location = gis_models.PointField()
-    last_ip_address = models.GenericIPAddressField()
+    last_location = gis_models.PointField(null=True, blank=True)
+    last_ip_address = models.GenericIPAddressField(null=True, blank=True)
     store = models.ForeignKey(Store, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):

@@ -1,0 +1,152 @@
+{% extends 'project_base.html' %}
+{% block title %}{{ work_data.title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>{{ work_data.title }}</h1>
+
+    {% if work_data.description %}
+        <p><strong>Description:</strong>
+            {% if work_data.description.value %}
+                {{ work_data.description.value }}
+            {% else %}
+                {{ work_data.description }}
+            {% endif %}
+        </p>
+    {% endif %}
+
+    {% if work_data.covers %}
+        <img src="https://covers.openlibrary.org/b/id/{{ work_data.covers.0 }}-L.jpg" class="img-fluid mb-4" alt="Cover">
+    {% endif %}
+
+    <h3>Available Editions</h3>
+    <input type="text" id="searchEdition" placeholder="Search editions..." class="form-control mb-3">
+
+    <div id="editions-list" class="list-group mb-3"></div>
+
+    <nav id="pagination-controls" class="d-flex justify-content-center mt-4">
+    <ul id="pagination" class="pagination mb-0"></ul>
+</nav>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  const workKey = "{{ work }}";
+const limit = 5;
+let currentPage = 1;
+let totalEntries = 0;
+
+function loadEditions(page = 1) {
+  if (page < 1) return;
+
+  const offset = (page - 1) * limit;
+
+  fetch(`https://openlibrary.org/works/${workKey}/editions.json?limit=${limit}&offset=${offset}`)
+    .then(response => response.json())
+    .then(data => {
+      const list = document.getElementById("editions-list");
+      list.innerHTML = '';
+
+      if (!data.entries.length) {
+        list.innerHTML = '<p>No editions found.</p>';
+        return;
+      }
+
+      data.entries.forEach(edition => {
+        const div = document.createElement("div");
+        div.className = "list-group-item";
+        div.innerHTML = `
+          <strong><a href="/contents${edition.key}">${edition.title || 'Untitled'}</a></strong><br>
+          Language: ${edition.languages ? edition.languages.map(l => l.key.split('/').pop()).join(', ') : 'Unknown'}<br>
+          Publisher: ${edition.publishers ? edition.publishers.join(', ') : 'N/A'}<br>
+          ISBN: ${edition.isbn_13 ? edition.isbn_13[0] : 'N/A'}
+        `;
+        list.appendChild(div);
+      });
+
+      // Update total entries and pagination controls
+      totalEntries = data.size || (page * limit + (data.entries.length < limit ? 0 : 1));
+      currentPage = page;
+      renderPagination();
+    })
+    .catch(err => {
+      console.error("Failed to load editions:", err);
+    });
+}
+
+function renderPagination() {
+  const pagination = document.getElementById("pagination");
+  pagination.innerHTML = '';
+
+  const totalPages = Math.ceil(totalEntries / limit);
+  const createPageItem = (page, text = page, active = false, disabled = false) => {
+    const li = document.createElement("li");
+    li.className = `page-item ${active ? 'active' : ''} ${disabled ? 'disabled' : ''}`;
+    const a = document.createElement("a");
+    a.className = "page-link";
+    a.href = "#";
+    a.innerText = text;
+    a.onclick = (e) => {
+      e.preventDefault();
+      if (!disabled && page !== currentPage) loadEditions(page);
+    };
+    li.appendChild(a);
+    return li;
+  };
+
+  // Prev button
+  pagination.appendChild(createPageItem(currentPage - 1, 'Previous', false, currentPage === 1));
+
+  if (totalPages <= 7) {
+    for (let i = 1; i <= totalPages; i++) {
+      pagination.appendChild(createPageItem(i, i, i === currentPage));
+    }
+  } else {
+    pagination.appendChild(createPageItem(1, 1, currentPage === 1));
+
+    if (currentPage > 3) {
+      const dots = document.createElement("li");
+      dots.className = "page-item disabled";
+      dots.innerHTML = `<span class="page-link">...</span>`;
+      pagination.appendChild(dots);
+    }
+
+    for (let i = currentPage - 1; i <= currentPage + 1; i++) {
+      if (i > 1 && i < totalPages) {
+        pagination.appendChild(createPageItem(i, i, i === currentPage));
+      }
+    }
+
+    if (currentPage < totalPages - 2) {
+      const dots = document.createElement("li");
+      dots.className = "page-item disabled";
+      dots.innerHTML = `<span class="page-link">...</span>`;
+      pagination.appendChild(dots);
+    }
+
+    pagination.appendChild(createPageItem(totalPages, totalPages, currentPage === totalPages));
+  }
+
+  // Next button
+  pagination.appendChild(createPageItem(currentPage + 1, 'Next', false, currentPage === totalPages));
+}
+
+// Init
+document.addEventListener("DOMContentLoaded", () => {
+  loadEditions();
+
+  // Search input on current list
+  document.getElementById("searchEdition").addEventListener("input", function () {
+    let filter = this.value.toLowerCase();
+    let items = document.querySelectorAll("#editions-list .list-group-item");
+    items.forEach(item => {
+      let text = item.innerText.toLowerCase();
+      item.style.display = text.includes(filter) ? "" : "none";
+    });
+  });
+});
+
+</script>
+{% endblock %}

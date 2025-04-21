@@ -1,8 +1,17 @@
+import json
+
 from django.contrib.auth.decorators import login_required
+from django.contrib.gis.db.models.functions import Distance
+from django.contrib.gis.geos import Point
+from django.contrib.gis.measure import D
+from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
+from django.views.decorators.csrf import csrf_exempt
+
 from .forms import StoreRegistrationForm
-from .models import Store
+from .models import Store, StoreContent
 from users.models import Profile
+from orders.models import Cart
 
 # Create your views here.
 def home(request):
@@ -20,7 +29,7 @@ def register_store(request):
             profile = Profile.objects.get(user=request.user)
             profile.store = store
             profile.save()
-            return redirect('store_detail', store)  # make sure this URL/view exists
+            return render(request, 'stores/store_detail.html', {'store': store})
     else:
         form = StoreRegistrationForm()
 
@@ -31,10 +40,74 @@ def stores(request):
     all_store = Store.objects.all()
     return render(request, 'libraries/stores.html', {'stores': all_store})
 
+
+def set_location(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        request.session['latitude'] = data.get('latitude')
+        request.session['longitude'] = data.get('longitude')
+        print(request.session['latitude'])
+        print(request.session['longitude'])
+        return JsonResponse({"message": "Location saved successfully!"})
+    return JsonResponse({"error": "Invalid request"}, status=400)
+
+
 def stores_near(request):
-    return render(request, 'libraries/stores_near.html')
+    if request.session['latitude'] and request.session['longitude']:
+        user_location = Point(request.session['longitude'], request.session['latitude'], srid=4326)
+        stores = Store.objects.annotate(distance=D('location', user_location)).order_by('distance')[:10]
+    else:
+        stores = Store.objects.none()  # No location stored
+
+    return render(request, 'libraries/stores_near.html', {'stores': stores})
+
 
 def store_detail(request):
     store_id = request.GET.get('id')
     store = get_object_or_404(Store, id=store_id)
-    return render(request, 'libraries/store_detail.html', {'store': store})
+    return render(request, 'stores/store_detail.html', {'store': store})
+
+def search_store(request):
+    stores = Store.objects.all()
+    q = request.GET.get('q')
+    if q:
+        stores = stores.filter(name__icontains=q)
+    return render(request, 'search/search_store.html', {'stores': stores})
+
+
+def search_store_content(request):
+    q = request.GET.get('q')
+    results = StoreContent.objects.select_related('store', 'content')
+    if q:
+        results = results.filter(content__title__icontains=q)
+    return render(request, 'search/search_store_content.html', {'results': results})
+
+
+def search_near_store_content(request):
+    q = request.GET.get('q')
+    user_profile = Profile.objects.get(user=request.user)
+    user_location = user_profile.last_location
+    results = StoreContent.objects.select_related('store', 'content')
+
+    if q:
+        results = results.filter(content__title__icontains=q)
+
+    if user_location:
+        results = results.annotate(distance=Distance('store__location', user_location)).order_by('distance')
+
+    return render(request, 'search/search_near_store_content.html', {'results': results})
+
+
+@login_required
+def store_content_detail(request, store_content_id):
+    store_content = get_object_or_404(StoreContent, id=store_content_id)
+    try:
+        cart_item = Cart.objects.get(user=request.user, store_content=store_content)
+        existing_quantity = cart_item.quantity
+    except Cart.DoesNotExist:
+        existing_quantity = 1  # default quantity if not already in cart
+
+    return render(request, 'libraries/store_content_detail.html', {
+        'store_content': store_content,
+        'existing_quantity': existing_quantity,
+    })

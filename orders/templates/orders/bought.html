@@ -1,0 +1,18 @@
+{% extends 'project_base.html' %}
+{% load static %}
+
+{% block title %}Previous Orders{% endblock %}
+
+{% block content %}
+
+{% for order in orders %}
+<p>{{ order.storeContent.content.title }}</p>
+<p>{{ order.storeContent.store.name }}</p>
+<p>{{ order.cost }}</p>
+
+{% empty %}
+<strong>Order Some</strong>
+{% endfor %}
+
+
+{% endblock %}

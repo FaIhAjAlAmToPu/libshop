@@ -1,20 +1,58 @@
 {% extends 'project_base.html' %}
-{% load static %}
 
 {% block content %}
-<h2>Nearby Stores</h2>
+<button onclick="getLocation()">Refresh My Location</button>
+    <p id="location"></p>
 
-<button id="refresh-location-btn" title="driving fast?">📍 Refresh My Location</button>
+<div id="store-results">
+  {% for store in stores %}
+    <div class="store-entry">
+      <h4>{{ store.name }}</h4>
+      <p>{{ store.address }}</p>
+      <p>📏 Distance: {{ store.distance|floatformat:2 }} km</p>
+    </div>
+  {% empty %}
+    <p>No stores found nearby.</p>
+  {% endfor %}
+</div>
 
-<!-- Your store list would go here -->
+    <script>
 
-{% endblock %}
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie) {
+        const cookies = document.cookie.split(';');
+        cookies.forEach(cookie => {
+            let [key, value] = cookie.trim().split('=');
+            if (key === name) cookieValue = value;
+        });
+    }
+    return cookieValue;
+}
 
-{% block extra_scripts %}
-<script src="{% static 'js/geolocation.js' %}"></script>
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    sendLocationToSession();
-  });
-</script>
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition);
+            } else {
+                document.getElementById("location").innerHTML = "Geolocation is not supported by this browser.";
+            }
+        }
+
+        function showPosition(position) {
+            document.getElementById("location").innerHTML =
+                "Latitude: " + position.coords.latitude +
+                "<br>Longitude: " + position.coords.longitude;
+            fetch('/save_location/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken') // Ensure CSRF token is included
+                },
+                body: JSON.stringify({
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude
+                })
+            });
+        }
+    </script>
 {% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'project_base.html' %}
+
+{% block content %}
+<h2>Your Order Requests</h2>
+
+{% if orderRequests %}
+  <ul>
+    {% for order in orderRequests %}
+      <li>
+        <strong>{{ order.storeContent.content.title }}</strong> from <strong>{{ order.storeContent.store.name }}</strong><br>
+        Status: {{ order.status }}<br>
+        Ordered At: {{ order.ordered_at|date:"M d, Y H:i" }}<br>
+        Deadline: {{ order.purchase_deadline|date:"M d, Y H:i" }}
+      </li>
+      <hr>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>You have not made any order requests yet.</p>
+{% endif %}
+{% endblock %}

@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from contents.models import Book
+from libraries.models import StoreContent
 from datetime import timedelta
 
 class Borrow(models.Model):
@@ -9,10 +9,10 @@ class Borrow(models.Model):
         ('returned', 'Returned'),  # Order finished
     ]
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    storeContent = models.ForeignKey(StoreContent, on_delete=models.CASCADE)
     borrow_date = models.DateField(auto_now_add=True)
     return_deadline = models.DateField()
-    returned_at = models.DateTimeField()
+    returned_at = models.DateTimeField(null=True, blank=True)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='borrowed')
 
     def save(self, *args, **kwargs):
@@ -21,7 +21,7 @@ class Borrow(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.user.username} borrowed {self.book.title}"
+        return f"{self.user.username} borrowed {self.storeContent.content.title} from {self.storeContent.store.name}"
 
 class BorrowRequest(models.Model):
     STATUS_CHOICES = [
@@ -31,16 +31,16 @@ class BorrowRequest(models.Model):
     ]
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    storeContent = models.ForeignKey(StoreContent, on_delete=models.CASCADE)
     requested_at = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
-    borrow_deadline = models.DateTimeField()
+    borrow_deadline = models.DateTimeField(null=True, blank=True)
     comment = models.TextField()
 
-    def save(self, *args, **kwargs):
-        if not self.borrow_deadline:
-            self.return_deadline = self.requested_at + timedelta(days=2)  # Should borrow the book before Default 2-day
-        super().save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     if not self.borrow_deadline:
+    #         self.return_deadline = self.requested_at + timedelta(days=2)
+    #     super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.user.username} requested {self.book.title} ({self.status})"
+        return f"{self.user.username} requested {self.storeContent.content.title} from {self.storeContent.store.name} ({self.status})"

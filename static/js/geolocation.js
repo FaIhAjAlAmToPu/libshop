@@ -1,5 +1,9 @@
 function sendLocationToSession(force = false) {
+    console.log('sendLocationToSession called');  // ✅ Add this
+
   if (force || !sessionStorage.getItem('locationSent')) {
+      console.log('inside force');  // ✅ Add this
+
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(function (position) {
         const data = {
@@ -7,7 +11,7 @@ function sendLocationToSession(force = false) {
           lon: position.coords.longitude
         };
 
-        fetch('/save-location/', {
+        fetch('/save_location/', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

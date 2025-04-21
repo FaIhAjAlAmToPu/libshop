@@ -1,6 +1,53 @@
 {% extends 'project_base.html' %}
 {% load static %}
 
+{% block title %}Search new Books{% endblock %}
+
 {% block content %}
-<a href="{% url 'stores_near' %}">register your Store or Library</a>
+<!-- Navbar and Search Form -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light px-4">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">LibShop</a>
+    <button class="navbar-toggler" type="button" data-mdb-toggle="collapse" data-mdb-target="#navbarContent">
+      <i class="fas fa-bars"></i>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarContent">
+      <ul class="navbar-nav me-3 mb-2 mb-lg-0">
+        <li class="nav-item"><a class="nav-link" href="{% url 'register_store' %}">register store</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'stores_near' %}">find stores near you</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'search_store' %}">Search store</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'search_book' %}">Search Book</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'search_store_content' %}">Search Book in A Library</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'search_near_store_content' %}">Advanced search</a></li>
+      </ul>
+
+      <form class="d-flex flex-grow-1 mx-3" style="max-width: 600px;" onsubmit="return false;">
+        <div class="input-group w-100">
+          <div class="form-outline w-100" data-mdb-input-init>
+            <input type="search" id="search" class="form-control" placeholder="Search books..." onkeyup="fetchSuggestions(this.value)" autocomplete="off" />
+            <label class="form-label" for="search">Search Open Library API </label>
+          </div>
+          <button class="btn btn-primary" type="button" data-mdb-ripple-init>
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </form>
+
+      <ul class="navbar-nav mb-2 mb-lg-0">
+        <li class="nav-item me-3"><a class="nav-link" href="#"><i class="fas fa-user-circle"></i> Profile</a></li>
+        <li class="nav-item"><a class="nav-link text-danger" href="#"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="d-flex justify-content-center">
+  <ul id="suggestions" class="list-group mt-2" style="width: 100%; max-width: 600px;"></ul>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+    <script type="text/javascript" src="{% static '/contents/js/search_book.js' %}"></script>
 {% endblock %}
