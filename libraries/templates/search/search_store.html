@@ -9,7 +9,7 @@
 </form>
 <ul>
   {% for store in stores %}
-    <li>{{ store.name }} - {{ store.address }}</li>
+    <li><a href="{% url 'store_detail' %}?id={{ store.id }}">{{ store.name }}</a> - {{ store.address }}</li>
   {% empty %}
     <li>No stores found.</li>
   {% endfor %}

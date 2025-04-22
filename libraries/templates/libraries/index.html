@@ -1,13 +1,13 @@
 {% extends 'project_base.html' %}
 {% load static %}
 
-{% block title %}Search new Books{% endblock %}
+{% block title %}Welcome to LibShop{% endblock %}
 
 {% block content %}
 <!-- Navbar and Search Form -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light px-4">
   <div class="container-fluid">
-    <a class="navbar-brand" href="#">LibShop</a>
+    <a class="navbar-brand" href="{% url 'home' %}">LibShop</a>
     <button class="navbar-toggler" type="button" data-mdb-toggle="collapse" data-mdb-target="#navbarContent">
       <i class="fas fa-bars"></i>
     </button>

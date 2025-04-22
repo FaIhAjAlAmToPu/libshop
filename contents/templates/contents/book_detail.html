@@ -18,9 +18,27 @@
             <p><strong>Genre:</strong> {{ book.genre }}</p>
         </div>
 
-        <div class="mt-6">
-            <a href="{% url 'book_list' %}" class="text-blue-600 hover:underline">← Back to all books</a>
-        </div>
+        {% if request.user.is_authenticated and request.user.profile.store %}
+            <hr class="my-6">
+            <h5 class="text-xl font-semibold">Add This Book to Your Store</h5>
+
+            <form method="POST" action="{% url 'add_store_content' book.id %}">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="price" class="block text-sm font-medium">Price:</label>
+                    <input type="number" name="price" class="form-control p-2 border border-gray-300 rounded"
+                           value="{{ existing.price|default_if_none:'' }}" step="0.01" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="stock" class="block text-sm font-medium">Stock:</label>
+                    <input type="number" name="stock" class="form-control p-2 border border-gray-300 rounded"
+                           value="{{ existing.stock|default_if_none:0 }}" min="0" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary p-2 bg-blue-500 text-white rounded">Add/Update in Store</button>
+            </form>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

@@ -9,7 +9,7 @@ class Borrow(models.Model):
         ('returned', 'Returned'),  # Order finished
     ]
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    storeContent = models.ForeignKey(StoreContent, on_delete=models.CASCADE)
+    storeContent = models.ForeignKey(StoreContent, on_delete=models.CASCADE, null=True)
     borrow_date = models.DateField(auto_now_add=True)
     return_deadline = models.DateField()
     returned_at = models.DateTimeField(null=True, blank=True)
@@ -31,7 +31,7 @@ class BorrowRequest(models.Model):
     ]
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    storeContent = models.ForeignKey(StoreContent, on_delete=models.CASCADE)
+    storeContent = models.ForeignKey(StoreContent, on_delete=models.CASCADE, null=True)
     requested_at = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
     borrow_deadline = models.DateTimeField(null=True, blank=True)

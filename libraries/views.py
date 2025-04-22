@@ -7,11 +7,13 @@ from django.contrib.gis.measure import D
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib import messages
 
 from .forms import StoreRegistrationForm
 from .models import Store, StoreContent
 from users.models import Profile
 from orders.models import Cart
+from contents.models import Content
 
 # Create your views here.
 def home(request):
@@ -62,10 +64,20 @@ def stores_near(request):
     return render(request, 'libraries/stores_near.html', {'stores': stores})
 
 
+@login_required
 def store_detail(request):
     store_id = request.GET.get('id')
     store = get_object_or_404(Store, id=store_id)
-    return render(request, 'stores/store_detail.html', {'store': store})
+    query = request.GET.get('q')
+
+    contents = StoreContent.objects.filter(store=store)
+    if query:
+        contents = contents.filter(content__title__icontains=query)
+
+    return render(request, 'stores/store_detail.html', {
+        'store': store,
+        'contents': contents,
+    })
 
 def search_store(request):
     stores = Store.objects.all()
@@ -111,3 +123,35 @@ def store_content_detail(request, store_content_id):
         'store_content': store_content,
         'existing_quantity': existing_quantity,
     })
+
+
+@login_required
+def add_store_content(request, content_id):
+    content = get_object_or_404(Content, id=content_id)
+    store = request.user.profile.store
+
+    if not store:
+        messages.error(request, "You are not assigned to any store.")
+        return redirect('home')  # Or your desired redirect
+
+    # Get existing store content if present
+    existing = StoreContent.objects.filter(store=store, content=content).first()
+
+    if request.method == 'POST':
+        price = request.POST.get('price')
+        stock = request.POST.get('stock')
+
+        if existing:
+            # Update existing store content
+            existing.price = price
+            existing.stock = stock
+            existing.save()
+            messages.success(request, f"{content.title} updated in your store!")
+        else:
+            # Create new store content
+            StoreContent.objects.create(store=store, content=content, price=price, stock=stock)
+            messages.success(request, f"{content.title} added to your store!")
+
+        return redirect('content_detail', content_id=content.id)
+
+    return redirect('content_detail', content_id=content.id)

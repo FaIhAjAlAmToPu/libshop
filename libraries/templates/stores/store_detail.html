@@ -2,11 +2,48 @@
 {% load static %}
 
 {% block content %}
-<strong>{{ store.name }}</strong><br>
-Address: {{ store.address }}<br>
-Type: {{ store.store_type }}<br>
-Email: {{ store.email }}<br>
-Phone: {{ store.phone }}<br>
-Website: <a href="{{ store.website }}">{{ store.website }}</a><br>
-Location: Latitude {{ store.location.y }}, Longitude {{ store.location.x }
+<div class="container mt-4">
+    <!-- Store Info -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h2 class="card-title">{{ store.name }}</h2>
+            <p class="card-text"><strong>Address:</strong> {{ store.address }}</p>
+            <p class="card-text"><strong>Type:</strong> {{ store.get_store_type_display }}</p>
+            <p class="card-text"><strong>Email:</strong> {{ store.email }}</p>
+            <p class="card-text"><strong>Phone:</strong> {{ store.phone }}</p>
+            <p class="card-text">
+                <strong>Website:</strong>
+                <a href="{{ store.website }}" target="_blank">{{ store.website }}</a>
+            </p>
+            <p class="card-text"><strong>Location:</strong> Latitude {{ store.location.y }}, Longitude {{ store.location.x }}</p>
+        </div>
+    </div>
+
+    <!-- Search Bar -->
+    <form method="get" class="input-group mb-4">
+        <input type="hidden" name="id" value="{{ store.id }}">
+        <input type="text" name="q" class="form-control" placeholder="Search for books or content..." value="{{ request.GET.q }}">
+        <button class="btn btn-primary" type="submit">Search</button>
+    </form>
+
+    <!-- Contents Section -->
+    <h4 class="mb-3">Available Contents</h4>
+    <div class="row">
+        {% for item in contents %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">{{ item.content.title }}</h5>
+                    <p class="card-text"><strong>Author:</strong> {{ item.content.author }}</p>
+                    <p class="card-text"><strong>Price:</strong> ${{ item.price }}</p>
+                    <p class="card-text"><strong>Stock:</strong> {{ item.stock }}</p>
+                    <a href="{% url 'add_to_cart' item.id %}" class="btn btn-success mt-auto">Add to Cart</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p>No contents found in this store.</p>
+        {% endfor %}
+    </div>
+</div>
 {% endblock %}

@@ -30,6 +30,29 @@
     {% endblock %}
   </head>
   <body>
+  {% if messages %}
+  <div class="container mt-4">
+    {% for message in messages %}
+      <div class="alert
+        {% if message.tags == 'error' %}
+          alert-danger
+        {% elif message.tags == 'success' %}
+          alert-success
+        {% elif message.tags == 'info' %}
+          alert-info
+        {% elif message.tags == 'warning' %}
+          alert-warning
+        {% else %}
+          alert-primary
+        {% endif %}
+        alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-mdb-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
     <!-- Start your project here-->
     {% block content %}
     {% endblock %}
