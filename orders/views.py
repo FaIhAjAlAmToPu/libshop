@@ -88,7 +88,7 @@ def checkout_done(request):
         cart_items = Cart.objects.filter(user=request.user)
         if not cart_items:
             messages.error(request, "Your cart is empty.")
-            return redirect('checkout_error')
+            return redirect('checkout')
         for item in cart_items:
             if item.quantity > item.storeContent.stock:
                 messages.error(
@@ -96,7 +96,7 @@ def checkout_done(request):
                     f"Not enough stock for '{item.storeContent.content.title}' in '{item.storeContent.store.name}'. "
                     f"Available: {item.storeContent.stock}, Requested: {item.quantity}."
                 )
-                return redirect('checkout_error')
+                return redirect('checkout')
             OrderRequest.objects.create(
                 user=request.user,
                 storeContent=item.storeContent,
@@ -106,7 +106,7 @@ def checkout_done(request):
             item.storeContent.save()
         cart_items.delete()
         messages.success(request, "Order placed successfully!")
-        return redirect('checkout_success')
+        return redirect('checkout')
     return redirect('checkout')
 
 
@@ -126,6 +126,15 @@ def order_requests(request):
     return render(request, 'orders/order_requests.html', {'orderRequests': orderRequests})
 
 
+@login_required
+def order_history(request):
+    orders = Order.objects.filter(user=request.user)
+    return render(request, 'orders/order_history.html', {'orders': orders})
+
+@login_required
+def order_detail(request, pk):
+    order = get_object_or_404(Order, pk=pk)
+    return render(request, 'orders/order_detail.html', {'order': order})
 
 @login_required
 def bought(request):

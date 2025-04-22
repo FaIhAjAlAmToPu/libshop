@@ -13,7 +13,7 @@ from .forms import StoreRegistrationForm
 from .models import Store, StoreContent
 from users.models import Profile
 from orders.models import Cart
-from contents.models import Content
+from contents.models import Content, Book
 
 # Create your views here.
 def home(request):
@@ -152,6 +152,15 @@ def add_store_content(request, content_id):
             StoreContent.objects.create(store=store, content=content, price=price, stock=stock)
             messages.success(request, f"{content.title} added to your store!")
 
-        return redirect('content_detail', content_id=content.id)
 
-    return redirect('content_detail', content_id=content.id)
+        # Redirect conditionally based on content type
+        if isinstance(content, Book):
+            return redirect('book_detail', pk=content.id)
+
+        return redirect('content_detail', pk=content.id)
+
+    # If not POST, redirect to detail
+    if isinstance(content, Book):
+        return redirect('book_detail', pk=content.id)
+
+    return redirect('content_detail', pk=content.id)

@@ -1,0 +1,60 @@
+{% extends 'project_base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mx-auto p-4 max-w-4xl">
+    <h2 class="text-center font-semibold mb-4">Order Detail - #{{ order.id }}</h2>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h4 class="card-title">Order Information</h4>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <p><strong>Status:</strong> 
+                        <span class="badge 
+                            {% if order.status == 'ordered' %}badge-warning{% endif %}
+                            {% if order.status == 'shipped' %}badge-info{% endif %}
+                            {% if order.status == 'delivered' %}badge-success{% endif %}
+                            {% if order.status == 'cancelled' %}badge-danger{% endif %}
+                        ">
+                        {{ order.status }}
+                        </span>
+                    </p>
+                    <p><strong>Order Date:</strong> {{ order.ordered_at|date:"Y-m-d H:i" }}</p>
+                    <p><strong>Purchase Deadline:</strong> {{ order.purchase_deadline|date:"Y-m-d" }}</p>
+                    <p><strong>Total Price:</strong> ${{ order.total_price }}</p>
+                    <p><strong>Comment:</strong> {{ order.comment|default:"No comments" }}</p>
+                </div>
+            </div>
+
+            <h4 class="card-title">Order Items</h4>
+            {% if order.items.all %}
+            <table class="table table-bordered table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Content Title</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in order.items.all %}
+                    <tr>
+                        <td>{{ item.store_content.content.title }}</td>
+                        <td>${{ item.price }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>${{ item.total_price }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p>No items found for this order.</p>
+            {% endif %}
+            
+            <a href="{% url 'order_history' %}" class="btn btn-secondary mt-3">Back to Order History</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

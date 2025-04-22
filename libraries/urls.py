@@ -13,6 +13,6 @@ urlpatterns = [
     path('search/near_store_content/', views.search_near_store_content, name='search_near_store_content'),
 
     path('store_content/<int:store_content_id>/', views.store_content_detail, name='store_content_detail'),
-    path('store/add/<int:content_id>/', views.add_store_content, name='add_store_content')
+    path('store/book/add/<int:content_id>/', views.add_store_content, name='add_store_content')
 
 ]

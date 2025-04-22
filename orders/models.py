@@ -2,6 +2,9 @@ from django.db import models
 from django.contrib.auth.models import User
 from libraries.models import StoreContent
 from datetime import timedelta
+from django.utils import timezone
+
+
 
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -29,6 +32,8 @@ class OrderRequest(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.purchase_deadline:
+            if not self.ordered_at:
+                self.ordered_at = timezone.now()  # Fallback if not set
             self.purchase_deadline = self.ordered_at + timedelta(days=7)
         super().save(*args, **kwargs)
 

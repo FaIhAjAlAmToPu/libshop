@@ -36,7 +36,18 @@
 
       <ul class="navbar-nav mb-2 mb-lg-0">
         <li class="nav-item me-3"><a class="nav-link" href="#"><i class="fas fa-user-circle"></i> Profile</a></li>
-        <li class="nav-item"><a class="nav-link text-danger" href="#"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        {% if user.is_authenticated %}
+        <li class="nav-item d-flex align-items-center">
+          <form method="POST" action="{% url 'logout' %}" class="m-0 p-0">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-link nav-link text-danger p-0 m-0" style="text-decoration: none;">
+              <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+          </form>
+        </li>
+        {% else %}
+        <li class="nav-item"><a class="nav-link text-success" href="{% url 'login' %}"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+        {% endif %}
       </ul>
     </div>
   </div>
