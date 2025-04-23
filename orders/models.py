@@ -10,6 +10,7 @@ class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     storeContent = models.ForeignKey(StoreContent, on_delete=models.CASCADE, null=True)
     bought_at = models.DateTimeField(auto_now_add=True)
+    quantity = models.PositiveIntegerField(default=1)
     cost = models.DecimalField(max_digits=10, decimal_places=2)
 
 
@@ -25,6 +26,7 @@ class OrderRequest(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     storeContent = models.ForeignKey(StoreContent, on_delete=models.CASCADE, null=True)
+    quantity = models.PositiveIntegerField(default=1)
     ordered_at = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='ordered')
     purchase_deadline = models.DateTimeField()

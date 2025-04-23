@@ -38,18 +38,31 @@
                 <p class="card-text"><strong>Price:</strong> ${{ item.price }}</p>
                 <p class="card-text"><strong>Stock:</strong> {{ item.stock }}</p>
 
+                {% if request.user.is_authenticated and request.user.profile.store != store %}
                 <!-- Add to Cart Button -->
                 <form action="{% url 'add_to_cart' item.id %}" method="POST">
                     {% csrf_token %}
                     <input type="number" name="quantity" value="1" min="1" class="form-control mb-2">
                     <button type="submit" class="btn btn-success mt-auto">Add to Cart</button>
                 </form>
+                {% endif %}
             </div>
         </div>
     </div>
     {% empty %}
     <p>No contents found in this store.</p>
     {% endfor %}
+
+        {% if request.user.is_authenticated and request.user.profile.store == store %}
+<!--                see current order requests to this store-->
+                <form action="{% url 'store_order_requests' store.id %}" method="GET">
+                    <button type="submit" class="btn btn-success mt-auto" class="form-control mb-2">See Order Requests</button>
+                </form>
+
+            <form action="{% url 'store_orders' store.id %}" method="GET">
+                    <button type="submit" class="btn btn-success mt-auto" class="form-control mb-2">See Orders</button>
+                </form>
+        {% endif %}
 </div>
 </div>
 {% endblock %}

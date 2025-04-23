@@ -1,0 +1,19 @@
+{% extends 'project_base.html' %}
+{% load static %}
+
+{% block content %}
+
+<ul>
+    {% for order in orders %}
+      <li>
+        <strong>{{ order.storeContent.content.title }}</strong><br>
+        Cost: {{ order.cost }}<br>
+        Quantity: {{ order.quantity }}<br>
+        Bought At: {{ order.bought_at|date:"M d, Y H:i" }}
+      </li>
+      <hr>
+  </ul>
+{% empty %}
+No orders present
+{% endfor %}
+{% endblock %}}

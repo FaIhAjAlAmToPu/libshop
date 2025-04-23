@@ -35,7 +35,7 @@
       </form>
 
       <ul class="navbar-nav mb-2 mb-lg-0">
-        <li class="nav-item me-3"><a class="nav-link" href="#"><i class="fas fa-user-circle"></i> Profile</a></li>
+        <li class="nav-item me-3"><a class="nav-link" href="{% url 'user_profile' request.user.id %}"><i class="fas fa-user-circle"></i> Profile</a></li>
         {% if user.is_authenticated %}
         <li class="nav-item d-flex align-items-center">
           <form method="POST" action="{% url 'logout' %}" class="m-0 p-0">
@@ -56,6 +56,9 @@
 <div class="d-flex justify-content-center">
   <ul id="suggestions" class="list-group mt-2" style="width: 100%; max-width: 600px;"></ul>
 </div>
+
+{% block index_content %}
+{% endblock %}
 
 {% endblock %}
 

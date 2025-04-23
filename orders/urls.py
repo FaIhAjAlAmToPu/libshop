@@ -14,4 +14,5 @@ urlpatterns = [
     path('requests/', views.order_requests, name='order_requests'),
     path('history/', views.order_history, name='order_history'),
     path('detail/<int:pk>/', views.order_detail, name='order_detail'),
+    path('requests/<int:pk>/accept/', views.accept_order_requests, name='accept_order_requests'),
 ]

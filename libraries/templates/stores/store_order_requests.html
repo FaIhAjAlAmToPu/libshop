@@ -1,0 +1,24 @@
+{% extends 'project_base.html' %}
+{% load static %}
+
+{% block content %}
+
+<ul>
+    {% for order in orderRequests %}
+      <li>
+        <strong>{{ order.storeContent.content.title }}</strong><br>
+        Price: {{ order.storeContent.price }}<br>
+        Quantity: {{ order.quantity }}<br>
+        Ordered At: {{ order.ordered_at|date:"M d, Y H:i" }}<br>
+        Deadline: {{ order.purchase_deadline|date:"M d, Y H:i" }}
+        <form action="{% url 'accept_order_requests' order.id %}" method="post">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-success mt-auto">Accept</button>
+        </form>
+      </li>
+      <hr>
+  </ul>
+{% empty %}
+No orders present
+{% endfor %}
+{% endblock %}}

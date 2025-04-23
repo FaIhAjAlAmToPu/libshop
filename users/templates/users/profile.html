@@ -1,0 +1,21 @@
+{% extends 'libraries/index.html' %}
+
+{% block index_content %}
+<div class="container mt-5">
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <h4 class="card-title">Profile</h4>
+      <hr>
+
+      <p><strong>Username:</strong> {{ profile.user.username }}</p>
+      <p><strong>Email:</strong> <a href="mailto:{{ profile.user.email }}">{{ profile.user.email }}</a></p>
+
+      {% if profile.store %}
+        <p><strong>Assigned Store:</strong> {{ profile.store.name }}</p>
+      {% else %}
+        <p><strong>Assigned Store:</strong> <span class="text-muted">Not assigned</span></p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

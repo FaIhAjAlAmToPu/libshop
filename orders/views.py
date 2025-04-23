@@ -97,9 +97,12 @@ def checkout_done(request):
                     f"Available: {item.storeContent.stock}, Requested: {item.quantity}."
                 )
                 return redirect('checkout')
+
+        for item in cart_items:
             OrderRequest.objects.create(
                 user=request.user,
                 storeContent=item.storeContent,
+                quantity=item.quantity,
                 status='ordered'
             )
             item.storeContent.stock -= item.quantity
@@ -124,6 +127,19 @@ def checkout_success(request):
 def order_requests(request):
     orderRequests = OrderRequest.objects.filter(user=request.user).order_by('-ordered_at')
     return render(request, 'orders/order_requests.html', {'orderRequests': orderRequests})
+
+@login_required
+def accept_order_requests(request, pk):
+    orderRequest = get_object_or_404(OrderRequest, pk=pk)
+    store_id=orderRequest.storeContent.store.id
+    order = Order.objects.create(
+        user=orderRequest.user,
+        storeContent=orderRequest.storeContent,
+        quantity=orderRequest.quantity,
+        cost=orderRequest.storeContent.price * orderRequest.quantity,
+    )
+    orderRequest.delete()
+    return redirect('store_order_requests', store_id=store_id)
 
 
 @login_required

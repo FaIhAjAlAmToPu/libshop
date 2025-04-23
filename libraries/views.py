@@ -15,6 +15,11 @@ from users.models import Profile
 from orders.models import Cart
 from contents.models import Content, Book
 
+from orders.models import OrderRequest
+
+from orders.models import Order
+
+
 # Create your views here.
 def home(request):
     return render(request, 'libraries/index.html')
@@ -164,3 +169,15 @@ def add_store_content(request, content_id):
         return redirect('book_detail', pk=content.id)
 
     return redirect('content_detail', pk=content.id)
+
+@login_required
+def store_order_requests(request, store_id):
+    store_content = get_object_or_404(StoreContent, store_id=store_id)
+    order_requests = OrderRequest.objects.filter(storeContent = store_content)
+    return render(request,'stores/store_order_requests.html', {'orderRequests': order_requests})
+
+@login_required
+def store_orders(request, store_id):
+    store_content = get_object_or_404(StoreContent, store_id=store_id)
+    orders = Order.objects.filter(storeContent = store_content)
+    return render(request, 'stores/store_orders.html', {'orders': orders})
