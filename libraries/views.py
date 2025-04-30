@@ -172,12 +172,10 @@ def add_store_content(request, content_id):
 
 @login_required
 def store_order_requests(request, store_id):
-    store_content = get_object_or_404(StoreContent, store_id=store_id)
-    order_requests = OrderRequest.objects.filter(storeContent = store_content)
+    order_requests = Order.objects.filter(storeContent__store_id=store_id)
     return render(request,'stores/store_order_requests.html', {'orderRequests': order_requests})
 
 @login_required
 def store_orders(request, store_id):
-    store_content = get_object_or_404(StoreContent, store_id=store_id)
-    orders = Order.objects.filter(storeContent = store_content)
+    orders = Order.objects.filter(storeContent__store_id = store_id)
     return render(request, 'stores/store_orders.html', {'orders': orders})

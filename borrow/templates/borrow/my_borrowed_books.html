@@ -1,0 +1,18 @@
+{% extends 'libraries/index.html' %}
+
+{% block index_content %}
+
+{% for borrow in borrows %}
+  <div class="card mb-3">
+    <div class="card-body">
+      <h5>{{ borrow.storeContent.content.title }}</h5>
+      <p><strong>Borrowed on:</strong> {{ borrow.borrow_date }}</p>
+      <p><strong>Return by:</strong> {{ borrow.return_deadline }}</p>
+      <p><strong>Status:</strong> {{ borrow.status }}</p>
+    </div>
+  </div>
+{% empty %}
+  <p>You haven’t borrowed anything.</p>
+{% endfor %}
+
+{% endblock %}

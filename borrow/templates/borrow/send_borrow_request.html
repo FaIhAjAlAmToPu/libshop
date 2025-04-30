@@ -1,0 +1,14 @@
+{% extends 'libraries/index.html' %}
+
+{% block index_content %}
+
+<form method="post">
+  {% csrf_token %}
+  <div class="mb-3">
+    <label for="comment" class="form-label">Comment</label>
+    <textarea name="comment" class="form-control" rows="3"></textarea>
+  </div>
+  <button type="submit" class="btn btn-primary">Send Request</button>
+</form>
+
+{% endblock %}

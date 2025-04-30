@@ -39,6 +39,9 @@ class OrderRequest(models.Model):
             self.purchase_deadline = self.ordered_at + timedelta(days=7)
         super().save(*args, **kwargs)
 
+    def is_overdue(self):
+        return self.status == 'ordered' and timezone.now().date() > self.purchase_deadline
+
     def __str__(self):
         return f"{self.user.username} requested {self.storeContent.content.title} from {self.storeContent.store.name} ({self.status})"
 

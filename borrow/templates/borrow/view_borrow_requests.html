@@ -1,0 +1,20 @@
+{% extends 'libraries/index.html' %}
+
+{% block index_content %}
+
+{% for req in requests %}
+  <div class="card mb-3">
+    <div class="card-body">
+      <h5>{{ req.storeContent.content.title }}</h5>
+      <p><strong>User:</strong> {{ req.user.username }}</p>
+      <p><strong>Comment:</strong> {{ req.comment }}</p>
+      <a href="{% url 'approve_borrow_request' req.id %}" class="btn btn-success">Approve</a>
+      <a href="{% url 'reject_borrow_request' req.id %}" class="btn btn-danger">Reject</a>
+    </div>
+  </div>
+{% empty %}
+  <p>No requests.</p>
+{% endfor %}
+
+
+{% endblock %}
